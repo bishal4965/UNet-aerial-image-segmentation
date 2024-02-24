@@ -8,8 +8,8 @@ function App() {
   return (
     <div>
       <AppNavbar />
-      {/* <AppCard /> */}
-      <Prac />
+      <AppCard />
+      {/* <Prac /> */}
     </div>
   );
 }

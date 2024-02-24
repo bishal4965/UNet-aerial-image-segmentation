@@ -1,15 +1,24 @@
+import { upload } from "@testing-library/user-event/dist/upload";
 import React from "react";
+import { useState } from "react";
 
 function AppCard() {
+  const [unMaskedImage, setunMaskedImage] = useState();
+
+  const sendImage = () => {
+    const uploadData = new FormData();
+    uploadData.append("unMaskedImage", unMaskedImage, unMaskedImage.name);
+    console.log("image-image-image");
+    fetch("http://127.0.0.1:8000/Images/", { method: "POST", body: uploadData })
+      .then((res) => console.log(res))
+      .catch((error) => console.log(error));
+  };
+
   return (
     <>
       <div className="container" style={{ width: 500, height: 600 }}>
         <div className="card">
-          <img
-            src="https://scontent.fktm10-1.fna.fbcdn.net/v/t39.30808-6/279294985_538531524321277_4748734065476347861_n.jpg?_nc_cat=103&ccb=1-7&_nc_sid=efb6e6&_nc_ohc=f_Pv31BVudIAX_qw0j4&_nc_ht=scontent.fktm10-1.fna&oh=00_AfAy4EyRmZKldvWpJU66PDqpVdrrMBPZrggxw1ZXplruGA&oe=65DEF1B5"
-            className="card-img-top"
-            alt="..."
-          />
+          <img src="..." className="card-img-top" alt="..." />
           <div className="card-body">
             <h5 className="card-title">Card title</h5>
             <p className="card-text">
@@ -17,14 +26,16 @@ function AppCard() {
               bulk of the card's content.
             </p>
             <div className="d-flex">
-            <div><a href="/" className="btn btn-primary">
-              Upload
-            </a></div>
-            <div>
-            <a href="/" className="btn btn-primary">
-              Segment Image
-            </a>
-            </div>
+              <div>
+                <label htmlFor="/" className="btn btn-primary">
+                  Upload Image
+                  <input
+                    type="file"
+                    onChange={(evt) => setunMaskedImage(evt.target.files[0])}
+                  />
+                </label>
+                <button onClick={() => sendImage()}>sendImage</button>
+              </div>
             </div>
           </div>
         </div>
