@@ -1,0 +1,16 @@
+/* Navbar.css */
+
+.navbar.bg-body-tertiary {
+  background-color: rgb(34, 40, 49) !important;
+}
+
+.navbar .container-fluid {
+  display: flex;
+  justify-content: center;
+}
+
+.navbar-brand,
+.navbar-brand:hover,
+.navbar-brand:focus {
+  color: rgb(238, 238, 238);
+}

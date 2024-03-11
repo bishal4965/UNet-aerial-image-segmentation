@@ -1,62 +1,87 @@
-// import { upload } from "@testing-library/user-event/dist/upload";
-import React from "react";
-import { useState } from "react";
+import React, { useState } from "react";
+import '../styles/Card.css'
 
 function AppCard() {
-  const [unMaskedImage, setunMaskedImage] = useState();
+  const [unMaskedImage, setUnMaskedImage] = useState(null);
   const [imageUrl, setImageUrl] = useState("");
+  const [maskImageUrl, setMaskImageUrl] = useState("");
 
-  // const sendImage = () => {
-  //   const uploadData = new FormData();
-  //   uploadData.append("unMaskedImage", unMaskedImage, unMaskedImage.name);
-  //   console.log("image-image-image");
-  //   fetch("http://127.0.0.1:8000/Images/", { method: "POST", body: uploadData })
-  //     .then((res) => console.log(res))
-  //     .catch((error) => console.log(error));
-  // };
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    setUnMaskedImage(file);
+    const url = URL.createObjectURL(file);
+    setImageUrl(url);
+  };
+
   const sendImage = () => {
     const uploadData = new FormData();
     uploadData.append("unMaskedImage", unMaskedImage, unMaskedImage.name);
-    
+
     fetch("http://127.0.0.1:8000/Images/", { method: "POST", body: uploadData })
       .then(response => response.json())
       .then(data => {
-        console.log(data);
-        // Assuming data contains the URL of the uploaded image
-        // Update the image src attribute with the uploaded image URL
-        // For example:
-        setImageUrl(data.unMaskedImage);
+        setMaskImageUrl(data.predictedMaskUrl);
       })
       .catch(error => console.log(error));
   };
-  
 
   return (
-    <>
-      <div className="container" style={{ width: 500, height: 600 }}>
-        <div className="card">
-          <img src={imageUrl} className="card-img-top" alt="..." />
-          <div className="card-body">
-            <h5 className="card-title">UnMasked Image</h5>
-            <p className="card-text">
-              Some quick example text to build on the card title and make up the
-              bulk of the card's content.
-            </p>
-            <div className="d-flex">
-              <div>
-                <label htmlFor="/" className="btn btn-fourth">
-                  <input
-                    type="file"
-                    onChange={(evt) => setunMaskedImage(evt.target.files[0])}
-                    />
-                  </label>
-              </div>
-              <button className="btn btn-primary" onClick={() => sendImage()}>sendImage</button>
+    <div className={`container ${imageUrl ? 'image-uploaded' : ''}`}>
+      <div className="card">
+        <div className="card-body">
+          <h5 className="card-title">Semantic Segmentation</h5>
+          {unMaskedImage && (
+            <div className="mb-3">
+              <p>Uploaded Image: {unMaskedImage.name}</p>
+            </div>
+          )}
+          <div className="row">
+            <div className="col-md-6">
+              {imageUrl && (
+                <div>
+                  <h6 className="card-subtitle mb-2 text-muted">Uploaded Image</h6>
+                  <img src={imageUrl} className="card-img-top mb-3" alt="Uploaded" style={{ 
+                    maxWidth: "100%", 
+                    maxHeight: "100%", 
+                    width: "auto", 
+                    height: "auto" 
+                  }} 
+                  />
+                </div>
+              )}
+            </div>
+            <div className="col-md-6">
+              {maskImageUrl && (
+                <div>
+                  <h6 className="card-subtitle mb-2 text-muted">Predicted Mask</h6>
+                  <img src={maskImageUrl} className="card-img-top mb-3" alt="Predicted Mask" style={{ 
+                    maxWidth: "100%", 
+                    maxHeight: "100%", 
+                    width: "auto", 
+                    height: "auto" 
+                  }} 
+                  />
+                </div>
+              )}
             </div>
           </div>
         </div>
+        <div className="d-flex justify-content-center"> {/* Use Bootstrap's justify-content-center class */}
+          <div className="btn-container">
+            <label htmlFor="upload" className="btn btn-secondary">
+              Upload Image
+              <input
+                id="upload"
+                type="file"
+                className="d-none"
+                onChange={handleFileChange}
+              />
+            </label>
+            <button className="btn btn-primary ms-2" onClick={sendImage}>Predict Mask</button>
+          </div>
+        </div>
       </div>
-    </>
+    </div>
   );
 }
 
